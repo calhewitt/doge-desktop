@@ -4,10 +4,12 @@ import gtk
 import webkit
 from subprocess import Popen
 import sys
+import os
+import json
 
 print """
 --------------------------------------------------------------------
-			DogeDE: The most wow Desktop Environment
+             DogeDE: The most wow Desktop Environment
 ---------------------------------------------------------------------
 """
 
@@ -36,9 +38,17 @@ def wv_action(view, frame, req, data=None):
 	else:
 		return False
 
+def load_finished(view, frame):
+	applications = json.loads(open(os.path.dirname(os.path.realpath(__file__)) + "/applications.json").read())
+	for name, command in applications.iteritems():
+		view.execute_script(" addApplication('" + name +  "', '" + command + "'); ")
+	# Render dogeisms (random positioning, etc)
+	view.execute_script(" render(); ")
+
 # Set up a window with a webview to display the lovely desktop
 view = webkit.WebView()
 view.connect("navigation-requested", wv_action) 
+view.connect("load-finished", load_finished)
 
 sw = gtk.ScrolledWindow() 
 sw.add(view) 
@@ -60,6 +70,6 @@ win.resize(width, height)
 win.add(sw) 
 win.show_all() 
 
-view.open("file:///home/cal/Documents/dogeDE/desktop.html") 
+view.open("file://" + os.path.dirname(os.path.realpath(__file__)) + "/desktop.html") 
 win.connect("delete-event", gtk.main_quit)
 gtk.main()

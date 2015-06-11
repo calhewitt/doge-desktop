@@ -7,12 +7,7 @@
 
 <div id = "dogeisms">
 	<!-- A set of floating dogeisms which will launch various applications -->
-	<div class = "dogeism application" data-package = "nautilus">Much Files</div>
-	<div class = "dogeism application" data-package = "google-chrome">So Browse</div>
-	<div class = "dogeism application" data-package = "gnome-terminal">Very Terminal</div>
-	<div class = "dogeism application" data-package = "libreoffice">So Office</div>
-	<div class = "dogeism application" data-package = "thunderbird">Many Email</div>
-	<div class = "dogeism application" data-package = "gedit">Such Editor</div>
+	<!-- This will be filled up by the parent application -->
 
 	<div id = "system-buttons">
 		<div id = "log-off">Much Exit</div>
@@ -21,6 +16,34 @@
 
 <script>
 $(document).ready(function() {
+	// Stop mouse cursor going select-ey when dragging
+	$("#dogeisms").mousedown(function(e) {
+		e.originalEvent.preventDefault();
+	})
+
+	// Disable standard context menu - make right click reload for development
+	$("#dogeisms").contextmenu(function(e) {
+		location.reload();
+		return false;
+	})
+
+	// Set up log off handler
+	$("#log-off").click(function() {
+		window.location = "desktop:logoff"
+	})
+})
+
+function launch(applicationName) {
+	// Send a message back to the Python container by attempting navigation to a run: URI
+	window.location = "run:" + applicationName
+}
+
+function addApplication(name, command) {
+	// Will be called by parent; to add one dogeism to the desktop
+	$("#dogeisms").append('<div class = "dogeism application" data-package = "' + command + '">' + name + '</div>');
+}
+
+function render() {
 	windowWidth = $(window).width()
 	windowHeight = $(window).height()
 	colors = Array("red", "limegreen", "fuchsia", "royalblue", "yellow")
@@ -49,26 +72,5 @@ $(document).ready(function() {
 	$(".application").click(function() {
 		launch($(this).attr("data-package"))
 	})
-
-	// Stop mouse cursor going select-ey when dragging
-	$("#dogeisms").mousedown(function(e) {
-		e.originalEvent.preventDefault();
-	})
-
-	// Disable standard context menu - make right click reload for development
-	$("#dogeisms").contextmenu(function(e) {
-		location.reload();
-		return false;
-	})
-
-	// Set up log off handler
-	$("#log-off").click(function() {
-		window.location = "desktop:logoff"
-	})
-})
-
-function launch(applicationName) {
-	// Send a message back to the Python container by attempting navigation to a run: URI
-	window.location = "run:" + applicationName
 }
 </script>
