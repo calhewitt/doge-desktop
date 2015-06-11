@@ -39,11 +39,14 @@ def wv_action(view, frame, req, data=None):
 		return False
 
 def load_finished(view, frame):
-	applications = json.loads(open(os.path.dirname(os.path.realpath(__file__)) + "/applications.json").read())
+	applications = configuration["applications"]
 	for name, command in applications.iteritems():
 		view.execute_script(" addApplication('" + name +  "', '" + command + "'); ")
 	# Render dogeisms (random positioning, etc)
 	view.execute_script(" render(); ")
+
+# Load config file
+configuration = json.loads(open(os.path.dirname(os.path.realpath(__file__)) + "/configuration.json").read())
 
 # Set up a window with a webview to display the lovely desktop
 view = webkit.WebView()
