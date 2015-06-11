@@ -15,7 +15,7 @@ print """
 
 def start_app(package_name):
 	print "STARTING: " + package_name
-	Popen(package_name, shell=False, close_fds=True)
+	Popen(package_name.split(" "), shell=False, close_fds=True)
 	# Unfocus the window, so that the newly started one has focus
 	win.set_focus(None)
 
@@ -45,6 +45,20 @@ def load_finished(view, frame):
 	# Render dogeisms (random positioning, etc)
 	view.execute_script(" render(); ")
 
+def button_press(widget, event):
+	# Load up the context menu if the user right-clicks on the desktop
+	if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
+		widget.popup(None, None, None, event.button, event.time)
+		pass
+
+def menuitem_response(widget, string):
+	index = menu_items.index(string)
+	if index == 0:
+		start_app(configuration["default-text-editor"] + " " + 
+			os.path.dirname(os.path.realpath(__file__)) + "/configuration.json")
+	elif index == 1:
+		view.execute_script("render()")
+
 # Load config file
 configuration = json.loads(open(os.path.dirname(os.path.realpath(__file__)) + "/configuration.json").read())
 
@@ -69,6 +83,16 @@ screen = win.get_screen()
 width, height = screen.get_width(), screen.get_height()
 win.resize(width, height)
 
+# Set up custom context menu for right clicks on the desktop
+menu = gtk.Menu()
+menu_items = ["Edit Programs", "Reposition Dogeisms"]
+for item in menu_items:
+	menu_item = gtk.MenuItem(item)
+	menu.append(menu_item)
+	menu_item.show()
+	menu_item.connect("activate", menuitem_response, item)
+# Link the menu to a button press event on the webview
+view.connect_object("event", button_press, menu)
 
 win.add(sw) 
 win.show_all() 
