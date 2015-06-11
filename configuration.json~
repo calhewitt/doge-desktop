@@ -5,7 +5,10 @@
 		"Very Terminal": "gnome-terminal",
 		"So Office": "libreoffice",
 		"Many Email": "thunderbird",
-		"Such Edit": "gedit"
+		"Such Edit": "gedit",
+		"Many FTP": "filezilla",
+		"Such Virtual": "virtualbox",
+		"Much Codes": "sublime-text"
 	},
 	"default-text-editor": "gedit"
 }
