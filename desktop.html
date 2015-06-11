@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<link rel = "stylesheet" href = "desktop.css">
+<script src = "jquery.js"></script>
+
+<div id = "background-container"></div>
+
+<div id = "dogeisms">
+	<!-- A set of floating dogeisms which will launch various applications -->
+	<div class = "dogeism application" data-package = "nautilus">Much Files</div>
+	<div class = "dogeism application" data-package = "google-chrome">So Browse</div>
+	<div class = "dogeism application" data-package = "gnome-terminal">Very Terminal</div>
+	<div class = "dogeism application" data-package = "libreoffice">So Office</div>
+	<div class = "dogeism application" data-package = "thunderbird">Many Email</div>
+	<div class = "dogeism application" data-package = "gedit">Such Editor</div>
+
+	<div id = "system-buttons">
+		<div id = "log-off">Much Exit</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+	windowWidth = $(window).width()
+	windowHeight = $(window).height()
+	colors = Array("red", "limegreen", "fuchsia", "royalblue", "yellow")
+	colorIndex = Math.floor(Math.random()*colors.length)
+	// Subtract a margin, along with the width/height of a dogeism
+	windowWidth = (windowWidth - 250) - 100 // 50 on each side
+	windowHeight = (windowHeight - 50) - 100 // and again
+	$(".application").each(function() {
+		// Position each dogeism at a random point on the desktop
+		left = Math.random()
+		_top =  Math.random() // 'top' means something magic in js
+		left *= windowWidth
+		_top *= windowHeight
+		$(this).css({"top": _top + 50, "left": left + 50})
+		// Pick a random color and assign it 
+		if (colorIndex == colors.length) { 
+			// Reset color index to 0 if it has looped past end
+			colorIndex = 0 
+		}
+		color = colors[colorIndex];
+		colorIndex ++;
+		$(this).css("color", color)
+	})
+
+	// Set up the click listeners for dogeisms
+	$(".application").click(function() {
+		launch($(this).attr("data-package"))
+	})
+
+	// Stop mouse cursor going select-ey when dragging
+	$("#dogeisms").mousedown(function(e) {
+		e.originalEvent.preventDefault();
+	})
+
+	// Disable standard context menu - make right click reload for development
+	$("#dogeisms").contextmenu(function(e) {
+		location.reload();
+		return false;
+	})
+
+	// Set up log off handler
+	$("#log-off").click(function() {
+		window.location = "desktop:logoff"
+	})
+})
+
+function launch(applicationName) {
+	// Send a message back to the Python container by attempting navigation to a run: URI
+	window.location = "run:" + applicationName
+}
+</script>

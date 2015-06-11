@@ -1,0 +1,65 @@
+#!/usr/bin/python
+
+import gtk
+import webkit
+from subprocess import Popen
+import sys
+
+print """
+--------------------------------------------------------------------
+			DogeDE: The most wow Desktop Environment
+---------------------------------------------------------------------
+"""
+
+def start_app(package_name):
+	print "STARTING: " + package_name
+	Popen(package_name, shell=False, close_fds=True)
+	# Unfocus the window, so that the newly started one has focus
+	win.set_focus(None)
+
+def desktop_action(action):
+	# For various actions like logging off...
+	if action == "logoff":
+		print "\nBYEEE\n\n"
+		sys.exit(0)
+
+def wv_action(view, frame, req, data=None):
+	# Called when the webview attempts a navigation change
+	uri = req.get_uri()
+	scheme, path = uri.split(':', 1)
+	if scheme == 'run':
+		start_app(path)
+		return True
+	elif scheme == 'desktop':
+		desktop_action(path)
+		return True
+	else:
+		return False
+
+# Set up a window with a webview to display the lovely desktop
+view = webkit.WebView()
+view.connect("navigation-requested", wv_action) 
+
+sw = gtk.ScrolledWindow() 
+sw.add(view) 
+
+win = gtk.Window(gtk.WINDOW_TOPLEVEL) 
+# Tell the OS that the window should be trated as a desktop
+win.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DESKTOP)
+win.set_title("Desktop")
+
+win.set_keep_below(True)
+win.stick()
+
+# Get the user's screen dimensions and resize the window appropriately
+screen = win.get_screen()
+width, height = screen.get_width(), screen.get_height()
+win.resize(width, height)
+
+
+win.add(sw) 
+win.show_all() 
+
+view.open("file:///home/cal/Documents/dogeDE/desktop.html") 
+win.connect("delete-event", gtk.main_quit)
+gtk.main()
