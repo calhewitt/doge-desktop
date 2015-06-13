@@ -3,9 +3,13 @@
 		"Much Files": "nautilus",
 		"So Browse": "google-chrome",
 		"Very Terminal": "gnome-terminal",
-		"So Office": "dsfiusd",
+		"So Office": "libreoffice",
 		"Many Email": "thunderbird",
-		"Such Edit": "gedit"
+		"Such Edit": "gedit",
+		"Many FTP": "filezilla",
+		"So Virtual": "virtualbox",
+		"Much Codez": "sublime-text",
+		"So Coin": "dogecoin"
 	},
 	"default-text-editor": "gedit"
 }

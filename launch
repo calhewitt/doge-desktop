@@ -99,7 +99,7 @@ win.resize(width, height)
 
 # Set up custom context menu for right clicks on the desktop
 menu = gtk.Menu()
-menu_items = ["Edit Programs", "Reposition Dogeisms", "Reload Desktop"]
+menu_items = ["Such Configure", "Much Repositions", "So Reload"]
 for item in menu_items:
 	menu_item = gtk.MenuItem(item)
 	menu.append(menu_item)
