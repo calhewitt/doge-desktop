@@ -15,7 +15,18 @@ print """
 
 def start_app(package_name):
 	print "STARTING: " + package_name
-	Popen(package_name.split(" "), shell=False, close_fds=True)
+	try:
+		Popen(package_name.split(" "), shell=False, close_fds=True)
+	except:
+		# Show error message
+		print "ERROR: Application not found. Try setting the link to launch another program in the configuration.json file."
+		message = gtk.MessageDialog(parent=None, 
+        	flags=0, 
+			type=gtk.MESSAGE_ERROR, 
+			message_format=None)
+		message.set_markup("Many error. Such not installed. So refconfigure. Much configuration.json. Wow.")
+		message.show()
+
 	# Unfocus the window, so that the newly started one has focus
 	win.set_focus(None)
 
@@ -58,6 +69,9 @@ def menuitem_response(widget, string):
 			os.path.dirname(os.path.realpath(__file__)) + "/configuration.json")
 	elif index == 1:
 		view.execute_script("render()")
+	elif index == 2:
+		Popen(os.path.dirname(os.path.realpath(__file__)) + "/launch", shell=False, close_fds=True)
+		sys.exit(0)
 
 # Load config file
 configuration = json.loads(open(os.path.dirname(os.path.realpath(__file__)) + "/configuration.json").read())
@@ -85,7 +99,7 @@ win.resize(width, height)
 
 # Set up custom context menu for right clicks on the desktop
 menu = gtk.Menu()
-menu_items = ["Edit Programs", "Reposition Dogeisms"]
+menu_items = ["Edit Programs", "Reposition Dogeisms", "Reload Desktop"]
 for item in menu_items:
 	menu_item = gtk.MenuItem(item)
 	menu.append(menu_item)
